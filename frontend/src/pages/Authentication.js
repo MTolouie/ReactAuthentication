@@ -23,6 +23,7 @@ export const authenticationAction = async ({ request }) => {
     password: data.get("password"),
   };
 
+  
   const response = await fetch("http://localhost:8080/" + mode, {
     method: "POST",
     body: JSON.stringify(authData),
@@ -31,18 +32,17 @@ export const authenticationAction = async ({ request }) => {
     },
   });
 
-  if(response.status === 422 || response.status === 401){
+  if (response.status === 422 || response.status === 401) {
     return response;
-  
-  
   }
-  if(!response.ok){
-    throw json({message:"Could Not Save The Data"},{status:500});
+  if (!response.ok) {
+    throw json({ message: "Could Not Save The Data" }, { status: 500 });
   }
-    
+
+  const resData = await response.json();
+  const token = resData.token;
+
+  localStorage.setItem("token", token);
 
   return redirect("/");
-
-
-
 };
